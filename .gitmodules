@@ -1,0 +1,6 @@
+[submodule "src/tennis_atp"]
+	path = src/tennis_atp
+	url = https://github.com/JeffSackmann/tennis_atp.git
+[submodule "src/tennis_wta"]
+	path = src/tennis_wta
+	url = https://github.com/JeffSackmann/tennis_wta.git
