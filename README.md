@@ -1,11 +1,17 @@
 # TO DO
-- Test web scraping with:
-    - https://github.com/serve-and-volley/atp-world-tour-tennis-data
+
 - Change Git repository to public
-- I'll be using https://awsacademy.instructure.com/courses/61569/modules/items/5435475 AWS Academy Learner Lab
 
 
-# Environment setup
+# Getting started
+Clone the repository and set up submodules:
+1. `git clone https://github.com/safurynp/pw-big-data-final-project.git`
+2. `git submodule init`
+3. `git submodule update`
+
+
+## Environment setup
+Set up Python environment using Conda:
 1. `conda env create -f environment.yml`
 2. `conda activate big-data-env`
 
@@ -13,8 +19,8 @@
 # Technology stack
 ## Programming languages
 - Python
-- LaTeX
 - Bash
+- LaTeX
 
 ## Big Data
 - Apache Spark through PySpark
