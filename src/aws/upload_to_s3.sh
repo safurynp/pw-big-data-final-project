@@ -12,3 +12,5 @@ do
   # Upload the file to the S3 bucket
   aws s3 cp $file s3://$bucket/
 done
+
+# 

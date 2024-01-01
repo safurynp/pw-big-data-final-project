@@ -2,52 +2,149 @@
 \usepackage[utf8]{inputenc}
 \usepackage[polish]{babel}
 \usepackage[T1]{fontenc}
+\usepackage[colorlinks=true, linkcolor=black, urlcolor=blue]{hyperref}
+\usepackage{pdfpages}
+\usepackage[titletoc,title]{appendix}
+\usepackage{acronym}
+
 
 \title{Master's Thesis on Big Data}
-\author{Your Name}
-\date{Year}
+\author{Paweł Safuryn}
+\date{2023}
 
 \begin{document}
 
-\begin{titlepage}
-\centering
-\vspace*{1cm}
-{\huge\bfseries Master's Thesis on Big Data\par}
-\vspace{1.5cm}
-{\scshape\LARGE Politechnika Warszawska \par}
-\vspace{1.5cm}
-{\itshape Paweł Safuryn\par}
-\vfill
-przedmiot ,,Projektowanie rozwiązań Big Data'' prowadzony przez \par
-mgr inż. ~Damiana Warszawskiego
+\includepdf[pages=-]{praca_koncowa_strona_tytulowa_BD.pdf}
 
-\vfill
+% \begin{titlepage}
+% \centering
+% {\large Big Data - ed.14 (23L) - Projekt końcowy\par}
+% {\huge\bfseries Master's Thesis on Big Data\par}
+% \vspace{1.5cm}
+% {\scshape\LARGE Politechnika Warszawska \par}
+% \vspace{1.5cm}
+% {\itshape Paweł Safuryn\par}
+% \vfill
+% Przedmiot ,,Projektowanie rozwiązań Big Data'' prowadzony przez \par
+% mgr inż.~Damiana Warszawskiego
 
-% Bottom of the page
-{\large \today\par}
-\end{titlepage}
+% \vfill
 
-\begin{abstract}
-This is where you write your abstract. It should briefly summarize the content of your thesis.
-\end{abstract}
-\newpage
+% % Bottom of the page
+% {\large \today\par}
+% \end{titlepage}
+
+% \addcontentsline{toc}{section}{Streszczenie}
+% \begin{abstract}
+% This is where you write your abstract. It should briefly summarize the content of your thesis.
+% \end{abstract}
+% \newpage
 
 \tableofcontents
 \newpage
 
+\section*{Akronimy}
+\addcontentsline{toc}{section}{Akronimy}
+\begin{acronym}
+\acro{AWS}{Amazon Web Services}
+\acro{CLI}{Command-line Interface}
+% Add more acronyms here...
+\end{acronym}
+
+
+
 \section{Wstęp}
+% Wprowadzenie do problematyki pracy. Wstęp na zakończenie powinien zawierać cel pracy oraz zakres pracy. 
+% Nie ma wymogu co do wyboru zestawu danych, niemniej, przyczyny wyboru powinny zostać opisane. Niezależnie od wielkości wybranego zbioru danych, analiza powinna być wykonana za pomocą narzędzi do przetwarzania Big Data.
+% Proces Data Engineering/Science można podzielić w ogólności na kroki:
+% 1. Zbieranie surowych danych
+% 2. Przetwarzanie danych
+% 3. Eksploracja danych
+% 4. Czyszczenie danych
+% 5. Modelowanie (opcjonalne)
+% 6. Produkt oparty na danych (czyste dane, analiza, wyniki itp.)
+% 7. Komunikacja wyników
+
+
+\subsection{}
+% Cos a tym jak  tenis   sie teraz zmienia i jest wiecej analytiki, profesjonalni graczce decduja sie miec data analysts w swoim zespole ale moga sobie na to pozwolic tylka  najbogatsi gracze - niedostepne dla nowych zawodnikow
+% Jak analytika moze pomagac i komu - zawodnicy, przygotowania do meczu, do treningow (nad czm najlepiej pracowac), ocena silnych i slabch punktow swoich i przeciwnikow. Ale takze dane pomagaja narodowym organizacja tenisowym lepiej wylapywac talenty i alokowac pieniadze w rozwoj - w ktorego zawodnika inwestowac i jak (co trenowac). Innego rodzaju dane (social media, player popularity) sa uzywane zeby zwiekszac fan engagement (out of scoper)
+
+% Opisz jakie dane  są ogólnie dostepne na rynku (to moze byy troche literature review):
+% Np. samozwancze data scraping, pierwsze proby oficialnego API scheme od ITF, duzo crowdsourcowanych danych gdzie ludzie sami ogladaja mecze i zapisuja statystyki
 
 \section{Przegląd literatury}
 
+\section{Opis danych}
+% Opisz dane od Jeffa - ATP i WTA
+% Dokladny opis tego co tam jest i jak jest skonstruowane
+% Czy unikalne ID gracza nachodza sie miedzy ATP i WTA? - tak - sa te same ID miedzy ATP i WTA
+% Statystyki z Futuresow nie  maja bardziej szczegolowych statystyk tak jak mecze  ATP
+% Wyjasnij roznice miedzy danymi - ATP matches, Futures, Challengers
+
 \section{Metodologia}
+
+\subsection{Ustawienie środowiska}
+\subsubsection{AWS Academy Learner Lab i AWS CLI}
+Projekt wykonywany jest z użyciem AWS Academy Learner Lab [61569] i AWS CLI version 2. AWS CLI jest konfigurowane poprzez skopiowanie ustawień AWS Academy Learner Lab (dostępnych w "AWS Details") do  pliku:
+\begin{verbatim}
+~/.aws/credentials
+\end{verbatim}
+
+\subsubsection{Inne narzędzia używane lokalnie}
+\begin{itemize}
+    \item Python --- główny język programowania używany do przetwarzania i analizy danych
+    \item MacTeX i \LaTeX --- używane do stworzenia pracy końcowej
+    \item GitHub i Git --- kontrola wersji
+    \item Miniconda --- zarządzanie środowiskiem wirtualnym oraz bibliotekami programistycznymi (np. do Pythona)
+\end{itemize}
+
+% Moze:
+% 1. Jakis Pipeline zeby ladowal automatycznie dane z repo Jeffa do S3 bucketow
+%  - moze sprawdzac regularnie czy jest nowy commit i wtedy aktualizowac wszystkie dane
+% 2. Zrob jakies konrketne trasnformacje na tych danych (oczyszczanie, itd.)
+% 3. Wizualizacje i analityka
+
+\subsection{Zbieranie danych}
+% Opisz skad wialem dane - ze strony i napisz ktore konkretnie pliki CSV uzywam (nie deblowe, nie amatorskie - przed Open Era, itd.). Daj linka do Appendixu w ktorym bedzie bardziej szczegolowy opis danych.
+
+\subsection{Przetwarzanie i czyszczenie danych}
+% Moje zastosowanie nie wymaga przetwarzania strumieniowego - przetwarzanie wsadowe jest  wystarczajace poniewaz przetwarzam dane  juz zebrane i historyczne  do moich celow biznesowych. Dane sa przetwarzane jako zbior niezaleznie od czasu ich wygenerowania. Nie potrzebuje szybkiej reakcji na dane w czasie rzeczywistym (do tego  by bylo przetwarzanie strumieniowe).
+
+% 1.  'hand' i 'ioc' kolumny  zmienione z object na kategoryczne
+% W hand zmien 'U' na NaN (U oznacza Unknown). A to Ambidextreous (oburęczny)
+
+\subsection{Eksploracja danych}
+\subsection{Modelowanie matematyczne i analiza danych}
+% Np. do pomocy zawodnikom  -  pokaz ktora nawierzchnia jest dla nich najlepsza a ktora najgorsza (pomaga ustawic treningi)
+\subsection{Produkt oparty na danych i komunikacja wyników}
 
 \section{Wyniki}
 
-\section{Wnioski}
+\section{Wnioski i zakończenie}
+% Tu należy umieścić wnioski końcowe wynikające z realizacji celu pracy dyplomowej oraz podsumowanie uzyskanych efektów. 
+
+% Co bym zrobil wiecej
+% - wlasny scaper danych albo bezposrednie poloczenie z API (ale nie ma API na stronach WTA/ATP/ITF)
+% - uzyc AWS Lambda zeby reagowac na nowy commit w repo - gdy przybywa nowy plik CSV to rozpoczynam caly pipeline od nowa
+
+% - Przeanalizuj statystyki deblowe (robilem tylko singlowe)
+% - Automatyczne  testowanie kodu - np. unit  testing
+
 
 \nocite{*} % This line includes all references in the bibliography
 
-\bibliographystyle{plain}
+\renewcommand{\refname}{Bibliografia}
+\addcontentsline{toc}{section}{\refname}
+\bibliographystyle{IEEEtran}
 \bibliography{bibliography/references}
+
+\begin{appendices}
+\renewcommand{\appendixname}{Załącznik}  % Change the name to Polish
+
+\section{Opis surowych danych}  % Add a section for each appendix
+% Appendix content...
+
+\end{appendices}
 
 \end{document}
