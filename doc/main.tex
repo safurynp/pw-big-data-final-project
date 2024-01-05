@@ -1,5 +1,6 @@
 \documentclass[12pt, a4paper]{article}
-\setlength{\parindent}{0pt} 
+% \setlength{\parindent}{0pt} 
+% \setlength{\parskip}{1em}
 \usepackage[utf8]{inputenc}
 \usepackage[polish]{babel}
 \addto\captionspolish{
@@ -11,38 +12,14 @@
 \usepackage[titletoc,title]{appendix}
 \usepackage[nohyperlinks]{acronym}
 
-
 \title{Master's Thesis on Big Data}
 \author{Paweł Safuryn}
 \date{2023}
 
+
 \begin{document}
 
 \includepdf[pages=-]{praca_koncowa_strona_tytulowa_BD.pdf}
-
-% \begin{titlepage}
-% \centering
-% {\large Big Data - ed.14 (23L) - Projekt końcowy\par}
-% {\huge\bfseries Master's Thesis on Big Data\par}
-% \vspace{1.5cm}
-% {\scshape\LARGE Politechnika Warszawska \par}
-% \vspace{1.5cm}
-% {\itshape Paweł Safuryn\par}
-% \vfill
-% Przedmiot ,,Projektowanie rozwiązań Big Data'' prowadzony przez \par
-% mgr inż.~Damiana Warszawskiego
-
-% \vfill
-
-% % Bottom of the page
-% {\large \today\par}
-% \end{titlepage}
-
-% \addcontentsline{toc}{section}{Streszczenie}
-% \begin{abstract}
-% This is where you write your abstract. It should briefly summarize the content of your thesis.
-% \end{abstract}
-% \newpage
 
 \tableofcontents
 \newpage
@@ -50,17 +27,30 @@
 \section*{Akronimy}
 \addcontentsline{toc}{section}{Akronimy}
 \begin{acronym}
+\acro{API}{Application Programming Interface}
 \acro{ATP}{Association of Tennis Professionals}
 \acro{AWS}{Amazon Web Services}
 \acro{CLI}{Command-line Interface}
 \acro{MiB}{Mebibajt (1 048 576 bajtów)}
+\acro{ML}{Machine Learning}
 \acro{WTA}{Women's Tennis Association}
-% Add more acronyms here...
 \end{acronym}
 
 
 
 \section{Wstęp}
+Analiza danych tenisowych stanowi dynamiczne pole, w którym ewolucja sportu i rosnąca ilość dostępnych danych stwarzają nowe możliwości dla zawodników i organizacji tenisowych. W obliczu coraz większego znaczenia analizy danych w sporcie, nawet profesjonalni gracze zaczynają dostrzegać jej wartość. Jednakże, dostęp do zaawansowanej analizy danych pozostaje zarezerwowany głównie dla najbardziej zamożnych graczy, co stawia nowych zawodników w niekorzystnej sytuacji.
+
+Celem niniejszego projektu jest zgłębienie potencjału analizy danych tenisowych oraz zbadanie sposobów, w jakie te dane mogą wpływać na rozwój zawodników, ich przygotowanie do meczów i treningów oraz na efektywność inwestycji w talenty tenisowe. Projekt skupi się również na analizie ogólnodostępnych danych tenisowych, w tym metodach pozyskiwania danych, takich jak scraping oraz oficjalne API od ITF, a także roli, jaką odgrywają społecznościowe źródła danych.
+
+Warto zauważyć, że tenis to gra, gdzie nawet najmniejsze różnice w punktach decydują o wyniku. Dane analityczne mogą zatem stanowić kluczową różnicę między zwycięstwem a porażką.
+
+Analiza danych pozwala również zauważyć powtarzalne wzorce, których niełatwo dostrzec podczas oglądania meczu na żywo. Przykładowo, kiedy gracze zdobywają punkty decydujące czy też w jakich momentach dokonują zwycięskich uderzeń.
+
+W ostatnich latach (2023/2024), istotną zmianą było udostępnienie danych z systemu Hawk-Eye zawodnikom. Od dawna Hawk-Eye był używany w tenisie, jednakże teraz ATP nawiązało partnerstwo z Infosys, aby lepiej wykorzystać te dane.
+
+Analiza danych tenisowych ma potencjał nie tylko wspierać indywidualnych zawodników, ale także pomagać narodowym organizacjom tenisowym w identyfikowaniu talentów i efektywnym rozdysponowywaniu środków na rozwój. To fascynujące pole, które może zmienić sposób, w jaki tenis jest rozumiany i rozwijany. 
+
 % Wprowadzenie do problematyki pracy. Wstęp na zakończenie powinien zawierać cel pracy oraz zakres pracy. 
 % Nie ma wymogu co do wyboru zestawu danych, niemniej, przyczyny wyboru powinny zostać opisane. Niezależnie od wielkości wybranego zbioru danych, analiza powinna być wykonana za pomocą narzędzi do przetwarzania Big Data.
 % Proces Data Engineering/Science można podzielić w ogólności na kroki:
@@ -74,13 +64,27 @@
 
 % Zalinkuj Githuba z calym kodem włącznie z kodem ktory wygenerowal ten dokument.
 
-
-\subsection{}
 % Cos a tym jak  tenis   sie teraz zmienia i jest wiecej analytiki, profesjonalni graczce decduja sie miec data analysts w swoim zespole ale moga sobie na to pozwolic tylka  najbogatsi gracze - niedostepne dla nowych zawodnikow
 % Jak analytika moze pomagac i komu - zawodnicy, przygotowania do meczu, do treningow (nad czm najlepiej pracowac), ocena silnych i slabch punktow swoich i przeciwnikow. Ale takze dane pomagaja narodowym organizacja tenisowym lepiej wylapywac talenty i alokowac pieniadze w rozwoj - w ktorego zawodnika inwestowac i jak (co trenowac). Innego rodzaju dane (social media, player popularity) sa uzywane zeby zwiekszac fan engagement (out of scoper)
 
 % Opisz jakie dane  są ogólnie dostepne na rynku (to moze byy troche literature review):
 % Np. samozwancze data scraping, pierwsze proby oficialnego API scheme od ITF, duzo crowdsourcowanych danych gdzie ludzie sami ogladaja mecze i zapisuja statystyki
+
+% - tennis is a game of very small margins - show some data how many points won difference - even if small data analytics can make a big difference between win or lose
+
+% - Tennis is a game of repeatable patterns - can’t see watching live but can see the patterns when you look at data - e.g. when do people hit winners, at what score?
+
+% - Where data is? ATP has hawk eyes report that players get / can buy. Some companies buy hawk eye data and correlate it with video and then sell to players
+
+% - In tennis, the more money invested in player, the more chance they have at making it - just for kick start?
+
+%  Mention the recent changes (2023/2024) with Hawk-Eye data becoming available to the players. Hawk Eye has been used since .... Now ATP partnered with Infosys to make better use of that data.
+
+% https://www.atptour.com/en/news/atp-tdi-unveil-tennis-iq-analytics-platform
+
+
+
+
 
 \section{Przegląd literatury}
 
@@ -97,10 +101,15 @@
 
 \subsection{Ustawienie środowiska}
 \subsubsection{AWS Academy Learner Lab i AWS CLI}
-Projekt wykonywany jest z użyciem AWS Academy Learner Lab [61569] i AWS CLI version 2. AWS CLI jest konfigurowane poprzez skopiowanie ustawień AWS Academy Learner Lab (dostępnych w "AWS Details") do  pliku:
+Projekt wykonywany jest z użyciem AWS Academy Learner Lab [61569] i AWS CLI version 2. AWS CLI jest konfigurowane poprzez skopiowanie ustawień AWS Academy Learner Lab (dostępnych pod przyciskiem ,,AWS Details'') do  pliku:
 \begin{verbatim}
 ~/.aws/credentials
 \end{verbatim}
+AWS Academy Learner Lab generuje tymczasowe dane uwierzytelniające do AWS CLI za każdym razem, gdy jest uruchomiony co powoduje, że plik \verb|~/.aws/credentials| musi być aktualizowany.
+
+% Add info about ~/.aws/config - default region
+
+% TODO: check LabRole ARN for CLI - https://us-east-1.console.aws.amazon.com/iam/home?region=us-east-1#/roles/details/LabRole?section=permissions
 
 Opis architektury Big Data i indywidualnych technologii AWS wykorzystanych podczas projektu znajduje się w sekcji \ref{sec:aws_architecture}.
 
@@ -111,7 +120,7 @@ Poniżej znajduje się lista głównych narzędzi używanych lokalnie podczas pr
     \item Bash --- używany do automatyzacji zadań, głównie tych wykorzystujących AWS CLI.
     \item MacTeX i \LaTeX --- używane do napisania tej pracy końcowej.
     \item GitHub i Git --- kontrola wersji. Cały kod dostępny na repozytorium \href{https://github.com/safurynp/pw-big-data-final-project}{pw-big-data-final-project}.
-    \item Miniconda --- zarządzanie środowiskiem wirtualnym oraz bibliotekami programistycznymi (np. do Pythona). Środowisko może być załadowane używając:
+    \item Miniconda --- zarządzanie środowiskiem wirtualnym oraz bibliotekami programi stycznymi (np. do Pythona). Środowisko może być załadowane używając:
 \begin{verbatim}
 conda env create -f environment.yml
 conda activate big-data-env
@@ -129,9 +138,21 @@ Diagram \ref{fig:aws_architecture} przedstawia ogólny zarys architektury Big Da
 
 Architektura ta składa się z następujących elementów:
 \begin{enumerate}
-    \item Surowych danych w formacie plików CSV.
-    \item Amazon Single Storage Service (Amazon S3) używanego do przechowywania surowych danych oraz przetworzonych danych.
-    \item 
+    \item \textbf{Źródła danych}: Surowe dane w formacie plików CSV.
+    \item \textbf{Skalowalny magazyn danych typu data lake}: 
+    \begin{itemize}
+        \item Amazon Single Storage Service (Amazon S3) używany do przechowywania surowych danych (bucket ,,tennis-stats-data'') oraz przetworzonych danych (bucket ,,processed-tennis-stats-data'').
+        \item Crawler używany do automatycznego aktualizowania metadanych w katalogu danych.
+        \item AWS Glue Data Catalog --- katalog danych używany do przechowywania metadanych o danych w Amazon S3.
+    \end{itemize}
+    \item \textbf{Zarządzanie przepływem danycb}: AWS Glue używany do eksploracji i przetwarzania danych za pomocą Notebooków AWS Glue i PySparka (Python API do Apache Spark).
+    \item \textbf{Analityka i wizualizacja danych}: \begin{itemize}
+        \item AWS QuickSight używany do wizualizacji danych i tworzenia dashboardów.
+        \item Amazon EMR Notebook używany do tworzenia modeli uczenia maszynowego z użyciem PySpark ML.
+    \end{itemize}
+
+    % CloudWatch for checking logs (e.g.. of the Crawler)
+
 \end{enumerate}
 
 % Moze:
@@ -147,35 +168,46 @@ Surowe tenisowe dane pozyskane są z dwóch repozytoriów na GitHubie Jeffa Sack
     \item Dla profesjonalnego tenisa męskiego (ATP) \cite{tennis_atp}.
     \item Dla profesjonalnego tenisa żeńskiego (WTA) \cite{tennis_wta}.
 \end{itemize}
-Dane zostały pozyskane przez autora najprawdopodobniej (bazując na opisie repozytoriów) poprzez ekstrakcję danych (\textit{web scraping}) z Wikidata i oficjalnych stron organizacji ATP i WTA..
-Dane są dostępne w formacie CSV. Dane dla ATP i WTA mają ten sam format i zawierają:
+Dane zostały pozyskane przez autora najprawdopodobniej (bazując na opisie repozytoriów) poprzez ekstrakcję danych (\textit{web scraping}) z Wikidata i oficjalnych stron organizacji ATP i WTA. Dane są dostępne w formacie CSV. Dane dla ATP i WTA mają ten sam format i zawierają:
 \begin{itemize}
     \item Statystyki z singlowych meczów tenisowych z głównego cyklu turniejów ATP i WTA (np. Wielkie Szlemy, ATP/WTA 1000). Dostępne są dla każdego roku od 1968 (początek ery Open) do 2023. Statystyki dla każdego roku są zawarte w osobnym pliku CSV.
     \item Statystyki z singlowych meczów tenisowych z etapów eliminacji oraz z niższych rangą turniejów ATP i WTA (np. Challengers, Futures). Te dostępne są od lat 1968/1978/1991 (w zależności od rodzaju turnieju) do 2023. Statystyki dla każdego roku są zawarte w osobnym pliku CSV.
     \item Lista graczy tenisa ziemnego, którzy grali w profesjonalnym turnieju ATP lub WTA wraz z podstawowymi informacjami na ich temat.
     \item Informacje o profesjonalnym rankingu ATP i WTA (aktualizowane co tydzień) od lat 70 do 2023. Statystyki dla każdej dekady i roku 2023 są zawarte w osobnym pliku CSV.
 \end{itemize}
-W sumie jest to 260 plików CSV o całkowitym rozmiarze 391,3 MiB. Repozytoria Jeffa Sackmanna na GitHubie zawierają również statystyki z meczów deblowych i amatorskich ale te zostały pominięte w tym projekcie. Bardziej szczegółowy opis surowych danych znajduje się w załączniku \ref{sec:raw_data_description}.
+W sumie są to 262 pliki CSV o całkowitym rozmiarze 395,7 MiB. Repozytoria Jeffa Sackmanna na GitHubie zawierają również statystyki z meczów deblowych i amatorskich ale te zostały pominięte w tym projekcie. Bardziej szczegółowy opis surowych danych znajduje się w załączniku \ref{sec:raw_data_description}.
 
 \subsubsection{Przesyłanie danych do chmury AWS}
 
+% TODO: Włóż różne rodzaje plików CSV do osobnych folderów
 
+% Glue Notebook vs EMR Notebook:
+% Use EMR Notebook When: You require a high level of customization, need specific big data processing frameworks, or prefer more control over cluster configurations.
+
+% Use Glue Notebook When: You want a serverless and managed environment for ETL tasks, data exploration, and working with the Glue Data Catalog without worrying about infrastructure management.
+
+% Both notebooks offer advantages depending on your specific use case. If your primary focus is big data processing and you need control over cluster configurations, EMR Notebook might be preferable. For ETL tasks, data catalog management, and a serverless approach, Glue Notebook could be more suitable.
 
 
 
 % CSV files -> S3 bucket -> EMR Notebook
-% Dodatkowo: CSV files -> AWS Lambda (commits) -> S3 bucket -> AWS Glue (co to robi?) -> AWS Athena (co to robi?) ->  EMR Notebook
+% Dodatkowo: CSV files -> AWS Lambda (commits) -> S3 bucket -> AWS Glue (co to robi?) -> AWS Athena (co to robi?) ->  EMR Notebook -> AWS QuickSight dashboard
 % Ultimately, using AWS Transfer Family for uploading CSV files onto S3 provides a more robust, managed, and versatile solution compared to direct uploads, especially if you need to support multiple protocols, manage access control tightly, and monitor transfer activities closely.
 
 
+\subsection{Eksploracja danych}
+% Crawler detects three types of schema from the CSV data and ccreate as three tables. Table is the metadata definition that represents your data, including its schema -  matches, players, rankings
+
+% Spark Notebook using Pandas (within AWS Glue Notebooks)
 
 \subsection{Przetwarzanie i czyszczenie danych}
 % Moje zastosowanie nie wymaga przetwarzania strumieniowego - przetwarzanie wsadowe jest  wystarczajace poniewaz przetwarzam dane  juz zebrane i historyczne  do moich celow biznesowych. Dane sa przetwarzane jako zbior niezaleznie od czasu ich wygenerowania. Nie potrzebuje szybkiej reakcji na dane w czasie rzeczywistym (do tego  by bylo przetwarzanie strumieniowe).
 
+% 1. Porblematyczny tekst nie w UTF-8 w wta_matches_qual_itf_2016.csv i 2017! i 2015! -  usuń rekord ręcznie i wyślij nowy plik do S3
 % 1.  'hand' i 'ioc' kolumny  zmienione z object na kategoryczne
 % W hand zmien 'U' na NaN (U oznacza Unknown). A to Ambidextreous (oburęczny)
 
-\subsection{Eksploracja danych}
+
 \subsection{Modelowanie matematyczne i analiza danych}
 % Np. do pomocy zawodnikom  -  pokaz ktora nawierzchnia jest dla nich najlepsza a ktora najgorsza (pomaga ustawic treningi)
 \subsection{Produkt oparty na danych i komunikacja wyników}
@@ -199,6 +231,9 @@ W sumie jest to 260 plików CSV o całkowitym rozmiarze 391,3 MiB. Repozytoria J
 
 % - Zrobic webowa aplikacje gdzie mozna filtrowac rozne tenisowe dane - nowy git commit moglby triggerowac caly pipeline konczacy sie deployowaniem tej aplikacji z nowymi danymi. Trenerzy, institycje tenisowy moglyby latwo przegladac te dane.
 
+% What more/better would I do:
+% - video data, ball and player tracking - give examples of existing software like YOLOv3
+% - You can mention the SwingVision data from my match and how it could be used
 
 
 

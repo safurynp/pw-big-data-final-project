@@ -1,6 +1,7 @@
 # TO DO
 
 - Change Git repository to public
+- Export environment.yml
 
 
 # Getting started
