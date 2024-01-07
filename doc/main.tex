@@ -80,6 +80,8 @@ Analiza danych tenisowych ma potencjał nie tylko wspierać indywidualnych zawod
 
 %  Mention the recent changes (2023/2024) with Hawk-Eye data becoming available to the players. Hawk Eye has been used since .... Now ATP partnered with Infosys to make better use of that data.
 
+% Goal to also have everything version controlled so it can be easily  reporduced (by me on another AWS instance) or by someone else. Hence, I avoided the use of GUIs and used AWS CLI and Bash scripts instead. Any Notebooks to be run on AWS Glue or EMR Notebook are also version controlled.
+
 % https://www.atptour.com/en/news/atp-tdi-unveil-tennis-iq-analytics-platform
 
 
@@ -151,7 +153,7 @@ Architektura ta składa się z następujących elementów:
         \item Amazon EMR Notebook używany do tworzenia modeli uczenia maszynowego z użyciem PySpark ML.
     \end{itemize}
 
-    % CloudWatch for checking logs (e.g.. of the Crawler)
+    % CloudWatch for checking logs (e.g.. of the Crawler or the AWS Glue ETL jobs)
 
 \end{enumerate}
 
@@ -176,6 +178,11 @@ Dane zostały pozyskane przez autora najprawdopodobniej (bazując na opisie repo
     \item Informacje o profesjonalnym rankingu ATP i WTA (aktualizowane co tydzień) od lat 70 do 2023. Statystyki dla każdej dekady i roku 2023 są zawarte w osobnym pliku CSV.
 \end{itemize}
 W sumie są to 262 pliki CSV o całkowitym rozmiarze 395,7 MiB. Repozytoria Jeffa Sackmanna na GitHubie zawierają również statystyki z meczów deblowych i amatorskich ale te zostały pominięte w tym projekcie. Bardziej szczegółowy opis surowych danych znajduje się w załączniku \ref{sec:raw_data_description}.
+
+% Napisz ile jest w sumie meczów w bazie danych, ile graczy (i ile tygodnie w rankingu, dla kazdego tygodnia pelny ranking)
+
+% Napisz ze moje dane nie są Big Data (typowo TB danych) ze wzgledu na ograniczenia AWS Academy Learner Lab ($100). Ale są na  tyle duże, że przetwarzanie wszytskiego na raz lokalnie mogłoby być problematyczne??? Te dane mogą rosnąć i być rozszerzone np. tagged video analysis do KAŻDEGO meczu ktory ma obraz wideo dostepny.
+
 
 \subsubsection{Przesyłanie danych do chmury AWS}
 
@@ -204,13 +211,53 @@ W sumie są to 262 pliki CSV o całkowitym rozmiarze 395,7 MiB. Repozytoria Jeff
 % Moje zastosowanie nie wymaga przetwarzania strumieniowego - przetwarzanie wsadowe jest  wystarczajace poniewaz przetwarzam dane  juz zebrane i historyczne  do moich celow biznesowych. Dane sa przetwarzane jako zbior niezaleznie od czasu ich wygenerowania. Nie potrzebuje szybkiej reakcji na dane w czasie rzeczywistym (do tego  by bylo przetwarzanie strumieniowe).
 
 % 1. Porblematyczny tekst nie w UTF-8 w wta_matches_qual_itf_2016.csv i 2017! i 2015! -  usuń rekord ręcznie i wyślij nowy plik do S3
-% 1.  'hand' i 'ioc' kolumny  zmienione z object na kategoryczne
+% 2. Napraw 'draw_size' w danych WTA - cast to long
+% 3.
+% Podziel score na wygrane i przegrane gemy?
+% 'hand' i 'ioc' kolumny  zmienione z object na kategoryczne
 % W hand zmien 'U' na NaN (U oznacza Unknown). A to Ambidextreous (oburęczny)
+% Zmien daty na DateType
+% Podziel score na wygrane i przegrane gemy?
+
+% AWS Data Catalog: Create an AWS Glue Data Catalog Table: Create an AWS Glue Data Catalog table that references your parquet data files in S3. This table will provide a structured representation of your data for easy querying and analysis.
+
+% Other AWS Glue Data Catalog benefits:
+% The AWS Glue Data Catalog serves several purposes, even if your processed data in Parquet format already contains a defined schema:
+
+% Schema Consistency and Centralized Metadata: The Glue Data Catalog acts as a centralized metadata repository. While Parquet files contain schema information, having metadata in the Glue Catalog ensures consistent and accessible metadata across various tools, queries, and users accessing the data. It also provides a structured and organized view of your data assets.
+
+% Compatibility and Interoperability: The Glue Data Catalog integrates seamlessly with various AWS services and analytics tools. It provides a consistent interface for interacting with data across these services, promoting interoperability between different systems or users within an organization.
+
+% Discoverability and Query Optimization: The Glue Data Catalog enables data discovery and query optimization. It stores statistics, partitioning information, and other metadata that can be utilized by query engines to optimize queries for faster execution. This metadata helps in planning and optimizing complex analytics tasks.
+
+% Data Lineage and Governance: It allows tracking the lineage of data, understanding how it was transformed, and where it's used. This is crucial for governance, compliance, and audit purposes.
+
+% While PySpark can infer schemas from Parquet files, using the Glue Data Catalog provides a more comprehensive and managed approach to handling metadata. It adds value in scenarios involving multiple users, tools, governance requirements, or when integrating with other AWS services where having a centralized and organized metadata repository is beneficial.
 
 
 \subsection{Modelowanie matematyczne i analiza danych}
+
+\subsubsection{Narzędzia i konfiguracja}
+% Create an EMR Notebook for PySpark:
+% 1. Set up an EMR lsuter: https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-gs.html
+% 2. Create Studio
+% 3. Create WOrkspac
+% 4.. Important to launch it WITH selected cluster and using Jupyter (old), NOT JypterLab. I think I don't have permissions to launch serverless so it didn't work.
+% 5.. change kernel to PySpark
+%  6. Select "DefaultSecurityGroup"
+
+% Followed this guide below to set up Python libraries (pandas, matplotlib) on EMR Cluster:
+% https://aws.amazon.com/blogs/big-data/install-python-libraries-on-a-running-cluster-with-emr-notebooks/
+
+\subsubsection{Analiza do pomocy zawodnikom i ich trenerom}
 % Np. do pomocy zawodnikom  -  pokaz ktora nawierzchnia jest dla nich najlepsza a ktora najgorsza (pomaga ustawic treningi)
+
+% Sprawdz quality  of serve zaleznosc z rankingiem - czy serwis mojego zawodnika musi byc lepszy?
+
+\subsubsection{Analiza do pomocy narodowym organizacjom tenisowym}
+
 \subsection{Produkt oparty na danych i komunikacja wyników}
+% Napisz hipotetycznie ze moznaby swtowrzy prosty dashboard na podstawie tych danych (np. uzywajac AWS QuickSight) i udostepniec/sprzedawac go trenerom, ktoryz mogliby latwo przegladac te dane i przygotowywac specjalne treningi dla swojego zawodnika i/lub przygotowawyca zawodnika do meczu z konkretnynm przeciwnikiem na podstawie statystyk
 
 \section{Wyniki}
 
@@ -235,6 +282,9 @@ W sumie są to 262 pliki CSV o całkowitym rozmiarze 395,7 MiB. Repozytoria Jeff
 % - video data, ball and player tracking - give examples of existing software like YOLOv3
 % - You can mention the SwingVision data from my match and how it could be used
 
+% I had problems doing my initial plan - Serverless EMR and QuickSight due to restrictions of the AWS Academy Learner Lab restrictions.
+
+% More data cleaning - e.g WTA loser 1st serve in and serve points played
 
 
 \nocite{*} % This line includes all references in the bibliography
