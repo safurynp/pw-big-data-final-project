@@ -12,7 +12,7 @@
 \usepackage[titletoc,title]{appendix}
 \usepackage[nohyperlinks]{acronym}
 
-\title{Master's Thesis on Big Data}
+\title{Wykorzystanie analizy big data na statystykach meczów tenisowych w celu poprawy przygotowania i wyników zawodnika}
 \author{Paweł Safuryn}
 \date{2023}
 
@@ -31,6 +31,7 @@
 \acro{ATP}{Association of Tennis Professionals}
 \acro{AWS}{Amazon Web Services}
 \acro{CLI}{Command-line Interface}
+\acro{ETL}{Extract, Transform, Load}
 \acro{MiB}{Mebibajt (1 048 576 bajtów)}
 \acro{ML}{Machine Learning}
 \acro{WTA}{Women's Tennis Association}
@@ -39,46 +40,38 @@
 
 
 \section{Wstęp}
-Analiza danych tenisowych stanowi dynamiczne pole, w którym ewolucja sportu i rosnąca ilość dostępnych danych stwarzają nowe możliwości dla zawodników i organizacji tenisowych. W obliczu coraz większego znaczenia analizy danych w sporcie, nawet profesjonalni gracze zaczynają dostrzegać jej wartość. Jednakże, dostęp do zaawansowanej analizy danych pozostaje zarezerwowany głównie dla najbardziej zamożnych graczy, co stawia nowych zawodników w niekorzystnej sytuacji.
+Tenis ziemny jest sportem indywidualnym, w którym nawet najmniejsza różnica może decydować o zwycięstwie. Zdarza się, że zwycięzca meczu zdobywa mniej punktów niż przegrany. Możliwe jest to dzięki (nieco skomplikowanym) zasadom punktacji. W tenisie, podobnie jak w innych sportach, analityka danych może właśnie stanowić tę kluczową różnicę między zwycięstwem a porażką. Jednak, w przeciwieństwie do innych sportów (np. baseball, piłka nożna), analityka danych w tenisie jest tematem stosunkowo nowym i nierozwiniętym pomimo ogromnej ilości szczegółowych danych zbieranych podczas meczów profesjonalnych rozgrywek. Powodem może być to, że tenis jest dosyć drogim sportem indywidualnym (w zespole zawodnika zazwyczaj nie ma miejsca dla analityka danych) o tradycyjnym wizerunku, który skutecznie zniechęca organizacje tenisowe, trenerów i zawodników do jakichkolwiek zmian. Niemniej jednak danych jest dużo i potencjał do zmian istnieje. Do takich danych należą między innymi:
+\begin{itemize}
+    \item Wysokopoziomowe statystyki meczów, np. wynik (sety, gemy), liczba asów, podwójnych błędów, wygranych punktów po pierwszym i drugim serwisie, itd.
+    \item Szczegółowe statystyki meczów, np. historia meczu punkt po punkcie.
+    \item Nagrania wideo meczów tenisowych, które mogą zostać poddane analizie, np. śledzenie piłki i ruchu zawodników.
+    \item Informacje z systemu Hawk-Eye (elektroniczny system umożliwiający rozstrzygnięcie kontrowersyjnych punktów), np. trajektoria piłki, prędkość piłki, rotacja piłki itd.
+    \item Warunki fizyczne zawodników
+\end{itemize}
+Niestety większość szczegółowych danych nie była i nadal nie jest dostępna publicznie. Do tej pory, dostęp do tych danych był dostępny za opłatą i tylko dla profesjonalnych zawodników. Poza samym dostępem do danych dochodzą koszty zatrudnienia analityka danych co sprawia, że zaawansowana analiza danych pozostaje zarezerwowana głównie dla najbardziej zamożnych graczy. Dopiero w drugiej połowie roku 2023 zaczęły pojawiać się głosy, że organizacje tenisowe (np. ATP) otwierają się na udostępnianie (w ograniczonym zakresie) danych z systemów takich jak Hawk-Eye \cite{the_telegraph}.
 
-Celem niniejszego projektu jest zgłębienie potencjału analizy danych tenisowych oraz zbadanie sposobów, w jakie te dane mogą wpływać na rozwój zawodników, ich przygotowanie do meczów i treningów oraz na efektywność inwestycji w talenty tenisowe. Projekt skupi się również na analizie ogólnodostępnych danych tenisowych, w tym metodach pozyskiwania danych, takich jak scraping oraz oficjalne API od ITF, a także roli, jaką odgrywają społecznościowe źródła danych.
+Główną korzyścią analizy tenisowych danych jest to, że pozwala ona zauważyć powtarzalne wzorce, których człowiek nie jest w stanie dostrzec podczas oglądania meczów na żywo lub na nagraniu wideo. Pozwala to zawodnikom (i ich trenerom) na, między innymi:
+\begin{itemize}
+    \item Zrozumienie słabych stron zawodnika i przygotowanie odpowiedniego treningu.
+    \item Zrozumienie słabych i mocnych stron przeciwnika i opracowanie odpowiedniej taktyki na mecz.
+    \item Odpowiednie planowanie startów turniejowych i przerw między turniejami.
+\end{itemize}
+Ponadto szczegółowa analiza danych może pomóc narodowym organizacjom tenisowym w identyfikowaniu młodych talentów i efektywnym rozdysponowywaniu środków na ich rozwój.
 
-Warto zauważyć, że tenis to gra, gdzie nawet najmniejsze różnice w punktach decydują o wyniku. Dane analityczne mogą zatem stanowić kluczową różnicę między zwycięstwem a porażką.
+\subsection{Cel i zakres pracy}
 
-Analiza danych pozwala również zauważyć powtarzalne wzorce, których niełatwo dostrzec podczas oglądania meczu na żywo. Przykładowo, kiedy gracze zdobywają punkty decydujące czy też w jakich momentach dokonują zwycięskich uderzeń.
+% Opisz co oznacza analisza big data - wykorzystanie narzedzi ... (sprawdz strone Microsoft)
 
-W ostatnich latach (2023/2024), istotną zmianą było udostępnienie danych z systemu Hawk-Eye zawodnikom. Od dawna Hawk-Eye był używany w tenisie, jednakże teraz ATP nawiązało partnerstwo z Infosys, aby lepiej wykorzystać te dane.
+% Celem niniejszego projektu jest zgłębienie potencjału analizy danych tenisowych oraz zbadanie sposobów, w jakie te dane mogą wpływać na rozwój zawodników, ich przygotowanie do meczów i treningów oraz na efektywność inwestycji w talenty tenisowe. Projekt skupi się również na analizie ogólnodostępnych danych tenisowych, w tym metodach pozyskiwania danych, takich jak scraping oraz oficjalne API od ITF, a także roli, jaką odgrywają społecznościowe źródła danych.
 
-Analiza danych tenisowych ma potencjał nie tylko wspierać indywidualnych zawodników, ale także pomagać narodowym organizacjom tenisowym w identyfikowaniu talentów i efektywnym rozdysponowywaniu środków na rozwój. To fascynujące pole, które może zmienić sposób, w jaki tenis jest rozumiany i rozwijany. 
 
 % Wprowadzenie do problematyki pracy. Wstęp na zakończenie powinien zawierać cel pracy oraz zakres pracy. 
 % Nie ma wymogu co do wyboru zestawu danych, niemniej, przyczyny wyboru powinny zostać opisane. Niezależnie od wielkości wybranego zbioru danych, analiza powinna być wykonana za pomocą narzędzi do przetwarzania Big Data.
-% Proces Data Engineering/Science można podzielić w ogólności na kroki:
-% 1. Zbieranie surowych danych
-% 2. Przetwarzanie danych
-% 3. Eksploracja danych
-% 4. Czyszczenie danych
-% 5. Modelowanie (opcjonalne)
-% 6. Produkt oparty na danych (czyste dane, analiza, wyniki itp.)
-% 7. Komunikacja wyników
 
-% Zalinkuj Githuba z calym kodem włącznie z kodem ktory wygenerowal ten dokument.
-
-% Cos a tym jak  tenis   sie teraz zmienia i jest wiecej analytiki, profesjonalni graczce decduja sie miec data analysts w swoim zespole ale moga sobie na to pozwolic tylka  najbogatsi gracze - niedostepne dla nowych zawodnikow
-% Jak analytika moze pomagac i komu - zawodnicy, przygotowania do meczu, do treningow (nad czm najlepiej pracowac), ocena silnych i slabch punktow swoich i przeciwnikow. Ale takze dane pomagaja narodowym organizacja tenisowym lepiej wylapywac talenty i alokowac pieniadze w rozwoj - w ktorego zawodnika inwestowac i jak (co trenowac). Innego rodzaju dane (social media, player popularity) sa uzywane zeby zwiekszac fan engagement (out of scoper)
 
 % Opisz jakie dane  są ogólnie dostepne na rynku (to moze byy troche literature review):
 % Np. samozwancze data scraping, pierwsze proby oficialnego API scheme od ITF, duzo crowdsourcowanych danych gdzie ludzie sami ogladaja mecze i zapisuja statystyki
 
-% - tennis is a game of very small margins - show some data how many points won difference - even if small data analytics can make a big difference between win or lose
-
-% - Tennis is a game of repeatable patterns - can’t see watching live but can see the patterns when you look at data - e.g. when do people hit winners, at what score?
-
-% - Where data is? ATP has hawk eyes report that players get / can buy. Some companies buy hawk eye data and correlate it with video and then sell to players
-
-% - In tennis, the more money invested in player, the more chance they have at making it - just for kick start?
-
-%  Mention the recent changes (2023/2024) with Hawk-Eye data becoming available to the players. Hawk Eye has been used since .... Now ATP partnered with Infosys to make better use of that data.
 
 % Goal to also have everything version controlled so it can be easily  reporduced (by me on another AWS instance) or by someone else. Hence, I avoided the use of GUIs and used AWS CLI and Bash scripts instead. Any Notebooks to be run on AWS Glue or EMR Notebook are also version controlled.
 
@@ -88,18 +81,16 @@ Analiza danych tenisowych ma potencjał nie tylko wspierać indywidualnych zawod
 
 
 
-\section{Przegląd literatury}
-
-\section{Opis danych}
-
-% Opisz dane od Jeffa - ATP i WTA
-% Dokladny opis tego co tam jest i jak jest skonstruowane
-% Czy unikalne ID gracza nachodza sie miedzy ATP i WTA? - tak - sa te same ID miedzy ATP i WTA
-% Statystyki z Futuresow nie  maja bardziej szczegolowych statystyk tak jak mecze  ATP
-% Wyjasnij roznice miedzy danymi - ATP matches, Futures, Challengers
-% Opisz jak duze sa te  dane - okolo 400 MiB, nie jest  to klasyczne Big Data ze wzgledu na ograniczenie AWS Academy Learner Lab. Te dane zawsze moga rosnac i byc rozszerzone np. tagged video analysis do KAŻDEGO meczu ktory ma obraz wideo dostepny.
 
 \section{Metodologia}
+% Proces Data Engineering/Science można podzielić w ogólności na kroki:
+% 1. Zbieranie surowych danych
+% 2. Przetwarzanie danych
+% 3. Eksploracja danych
+% 4. Czyszczenie danych
+% 5. Modelowanie (opcjonalne)
+% 6. Produkt oparty na danych (czyste dane, analiza, wyniki itp.)
+% 7. Komunikacja wyników
 
 \subsection{Ustawienie środowiska}
 \subsubsection{AWS Academy Learner Lab i AWS CLI}
@@ -132,7 +123,7 @@ conda activate big-data-env
 
 \subsection{Architektura Big Data w AWS} \label{sec:aws_architecture}
 Diagram \ref{fig:aws_architecture} przedstawia ogólny zarys architektury Big Data w AWS użytej w projekcie.
-\begin{figure}[h]
+\begin{figure}[h!]
     \includegraphics[width=\textwidth]{figures/aws_architecture.png}
     \caption{Architektura Big Data w AWS.}
     \label{fig:aws_architecture}
@@ -152,8 +143,7 @@ Architektura ta składa się z następujących elementów:
         \item AWS QuickSight używany do wizualizacji danych i tworzenia dashboardów.
         \item Amazon EMR Notebook używany do tworzenia modeli uczenia maszynowego z użyciem PySpark ML.
     \end{itemize}
-
-    % CloudWatch for checking logs (e.g.. of the Crawler or the AWS Glue ETL jobs)
+    \item \textbf{Logi}: Amazon CloudWatch używany do sprawdzania logów z Crawlera i procesów ETL w AWS Glue lub klastrów Amazon EMR.
 
 \end{enumerate}
 
@@ -286,6 +276,14 @@ W sumie są to 262 pliki CSV o całkowitym rozmiarze 395,7 MiB. Repozytoria Jeff
 
 % More data cleaning - e.g WTA loser 1st serve in and serve points played
 
+% Starting new EMR cluster everytime I wanted to run a Jupyter notebook was time consuming. Maybe I should have automated the process somehow (AWS CLI?)
+
+% Clean up some Notebook code - e..g. define functions instead of repeating code with different parameters.
+
+% Przeanalizowanie podobnych zaleznosci w profesjonalnym tenisie żeńskim (WTA), nie tylko męskim (ATP)
+
+% More cleaing with the winner_ht and loser_ht especially in the WTA data
+
 
 \nocite{*} % This line includes all references in the bibliography
 
@@ -298,6 +296,13 @@ W sumie są to 262 pliki CSV o całkowitym rozmiarze 395,7 MiB. Repozytoria Jeff
 \renewcommand{\appendixname}{Załącznik}  % Change the name to Polish
 
 \section{Opis surowych danych} \label{sec:raw_data_description}
+
+% Opisz dane od Jeffa - ATP i WTA
+% Dokladny opis tego co tam jest i jak jest skonstruowane
+% Czy unikalne ID gracza nachodza sie miedzy ATP i WTA? - tak - sa te same ID miedzy ATP i WTA
+% Statystyki z Futuresow nie  maja bardziej szczegolowych statystyk tak jak mecze  ATP
+% Wyjasnij roznice miedzy danymi - ATP matches, Futures, Challengers
+% Opisz jak duze sa te  dane - okolo 400 MiB, nie jest  to klasyczne Big Data ze wzgledu na ograniczenie AWS Academy Learner Lab. Te dane zawsze moga rosnac i byc rozszerzone np. tagged video analysis do KAŻDEGO meczu ktory ma obraz wideo dostepny.
 
 \end{appendices}
 
