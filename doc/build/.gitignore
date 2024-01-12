@@ -1,5 +1,6 @@
 # Igonore all
 *
 
-# Except this file
+# Except these files
 !.gitignore
+!*.pdf

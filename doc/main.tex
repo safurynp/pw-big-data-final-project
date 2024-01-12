@@ -30,7 +30,9 @@
 
 \begin{document}
 
-\includepdf[pages=-]{praca_koncowa_strona_tytulowa_BD.pdf}
+\includepdf[linktodoc=true,pages=-]{praca_koncowa_strona_tytulowa_BD.pdf}
+
+
 
 \tableofcontents
 \newpage
@@ -62,7 +64,7 @@ Tenis ziemny jest sportem indywidualnym, w którym nawet najmniejsza różnica m
     \item Informacje z systemu Hawk-Eye (elektroniczny system umożliwiający rozstrzygnięcie kontrowersyjnych punktów), np. trajektoria piłki, prędkość piłki, rotacja piłki itd.
     \item Warunki fizyczne zawodników.
 \end{itemize}
-Niestety większość szczegółowych danych nie była i nadal nie jest dostępna publicznie. Do tej pory, dostęp do tych danych był dostępny za opłatą i tylko dla profesjonalnych zawodników. Poza samym dostępem do danych dochodzą koszty zatrudnienia analityka danych co sprawia, że zaawansowana analiza danych pozostaje zarezerwowana głównie dla najbardziej zamożnych graczy. Dopiero w drugiej połowie roku 2023 zaczęły pojawiać się głosy, że organizacje tenisowe (np. ATP) otwierają się na udostępnianie (w ograniczonym zakresie) danych z systemów takich jak Hawk-Eye \cite{the_telegraph}.
+Niestety większość szczegółowych danych nie była i nadal nie jest dostępna publicznie. Do tej pory, dostęp do tych danych był dostępny za opłatą i tylko dla profesjonalnych zawodników. Poza samym dostępem do danych dochodzą koszty zatrudnienia analityka danych, co sprawia, że zaawansowana analiza danych pozostaje zarezerwowana głównie dla najbardziej zamożnych graczy. Dopiero w drugiej połowie roku 2023 zaczęły pojawiać się głosy, że organizacje tenisowe (np. ATP) otwierają się na udostępnianie (w ograniczonym zakresie) danych z systemów takich jak Hawk-Eye \cite{the_telegraph}.
 
 Główną korzyścią analizy tenisowych danych jest to, że pozwala ona zauważyć powtarzalne wzorce, których człowiek nie jest w stanie dostrzec podczas oglądania meczów na żywo lub na nagraniu wideo. Pozwala to zawodnikom (i ich trenerom) na, między innymi:
 \begin{itemize}
@@ -102,7 +104,7 @@ Projekt wykonywany jest z użyciem AWS Academy Learner Lab [61569] i AWS CLI ver
 \begin{verbatim}
 ~/.aws/credentials
 \end{verbatim}
-AWS Academy Learner Lab generuje tymczasowe dane uwierzytelniające do AWS CLI za każdym razem, gdy jest uruchomiony co powoduje, że plik \verb|~/.aws/credentials| musi być aktualizowany.
+AWS Academy Learner Lab generuje tymczasowe dane uwierzytelniające do AWS CLI za każdym razem, gdy jest uruchomiony, co powoduje, że plik \verb|~/.aws/credentials| musi być aktualizowany.
 
 % Add info about ~/.aws/config - default region
 
@@ -169,7 +171,7 @@ Dane zostały pozyskane przez autora najprawdopodobniej (bazując na opisie repo
     \item Lista graczy tenisa ziemnego, którzy grali w profesjonalnym turnieju ATP lub WTA wraz z podstawowymi informacjami na ich temat.
     \item Informacje o profesjonalnym rankingu ATP i WTA (aktualizowane co tydzień) od lat 70 do 2023. Statystyki dla każdej dekady i roku 2023 są zawarte w osobnym pliku CSV.
 \end{itemize}
-W sumie są to 262 pliki CSV o całkowitym rozmiarze 395,7 MiB. W sumie są to informacje o 1 581 121 meczach, 2 621 tygodniach rankingów, 64 675 zawodnikach i 65 607 zawodniczkach. Repozytoria Jeffa Sackmanna na GitHubie zawierają również statystyki z meczów deblowych i amatorskich ale te zostały pominięte w tym projekcie. Bardziej szczegółowy opis surowych danych znajduje się w załączniku \ref{sec:raw_data_description}.
+W sumie są to 262 pliki CSV o całkowitym rozmiarze 395,7 MiB. W sumie są to informacje o 1 581 121 meczach, 2 621 tygodniach rankingów, 64 675 zawodnikach i 65 607 zawodniczkach. Repozytoria Jeffa Sackmanna na GitHubie zawierają również statystyki z meczów deblowych i amatorskich, ale te zostały pominięte w tym projekcie. Bardziej szczegółowy opis surowych danych znajduje się w załączniku \ref{sec:raw_data_description}.
 
 Te dane zostały wybrane z poniższych powodów:
 \begin{itemize}
@@ -386,7 +388,7 @@ Skuteczność pierwszego serwisu wyrażona jest za pomocą dwóch metryk:
     \item Procent trafionych pierwszych serwisów (\textit{1st serve percentage})
     \item Procent wygranych punktów po trafionym pierwszym serwisie (\textit{Percentage of points won after 1st serve})
 \end{itemize}
-Wyraźnie widać, że trafianie pierwszym serwisem daje przewagę każdemu zawodnikowi (procent wygranych punktów > 64\%) jednak ta przewaga jest zdecydowanie większa dla graczy wyższych. Co ciekawe, procent trafionych pierwszych serwisów jest podobny dla graczy niższych i wyższych. Gracze średniego wzrostu trafiają pierwszym serwisem trochę mniej. Może to być związane z tym jak warunki fizyczne kształtują styl gry, na przykład:
+Wyraźnie widać, że trafianie pierwszym serwisem daje przewagę każdemu zawodnikowi (procent wygranych punktów > 64\%) jednak ta przewaga jest zdecydowanie większa dla graczy wyższych. Co ciekawe, procent trafionych pierwszych serwisów jest podobny dla graczy niższych i wyższych. Gracze średniego wzrostu trafiają pierwszym serwisem trochę mniej. Może to być związane z tym, jak warunki fizyczne kształtują styl gry, na przykład:
 \begin{itemize}
     \item Gracze niscy częściej trafiają pierwszym serwisem, aby uniknąć słabszego drugiego serwisu, który często jest atakowany.
     \item Gracze wysocy częściej trafiają pierwszym serwisem, aby ograniczyć długość wymian ze względu na gorszą kondycję i mobilność.
@@ -399,7 +401,7 @@ Niemniej jednak rozwijający się gracze powinni monitorować skuteczność swoj
 
 
 \section{Wnioski i zakończenie}
-Praca wykazała potencjał analizy tenisowych danych w celu poprawy przygotowania i wyników zawodnika. Do przetwarzania i analizy danych skutecznie zostały użyte metody, narzędzia i aplikacje do przetwarzania dużych zbiorów danych (\textit{big data}). Potencjał analizy został wykazany pomimo użycia stosunkowo małego zbioru danych (395,7 MiB) w kontekście big data. Rozszerzenie tego zbioru i przeprowadzenie analiz na większych i bardziej różnorodnych danych (np. historia meczu punkt po punkcie, nagrania wideo meczów, system Hawk-Eye) ma potencjał zrewolucjonizować podejście trenerów, organizacji i samych zawodników do ich tenisowego rozwoju.
+Praca wykazała użyteczność analizy tenisowych danych w celu poprawy przygotowania i wyników zawodnika. Do przetwarzania i analizy danych skutecznie zostały użyte metody, narzędzia i aplikacje do przetwarzania dużych zbiorów danych (\textit{big data}). Użyteczność analizy została wykazana pomimo użycia stosunkowo małego zbioru danych (395,7 MiB) w kontekście big data. Rozszerzenie tego zbioru i przeprowadzenie analiz na większych i bardziej różnorodnych danych (np. historia meczu punkt po punkcie, nagrania wideo meczów, informacje z systemu Hawk-Eye) ma potencjał zrewolucjonizować podejście trenerów, organizacji i samych zawodników do ich tenisowego rozwoju.
 
 \subsection{Ulepszenia i dalsza praca}
 Potencjalne ulepszenia tej pracy i dalsza praca do wykonania:
