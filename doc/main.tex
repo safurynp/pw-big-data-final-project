@@ -140,26 +140,21 @@ Architektura ta składa się z następujących elementów:
     \item \textbf{Źródła danych}: Surowe dane w formacie plików CSV.
     \item \textbf{Skalowalny magazyn danych typu data lake}: 
     \begin{itemize}
-        \item Amazon Single Storage Service (Amazon S3) używany do przechowywania surowych danych (bucket ,,tennis-stats-data'') oraz przetworzonych danych (bucket ,,processed-tennis-stats-data'').
+        \item Amazon Single Storage Service (Amazon S3) używany do przechowywania surowych danych (lokalizacja ,,tennis-stats-data'' w S3) oraz przetworzonych danych (lokalizacja ,,processed-tennis-stats-data'' w S3).
         \item AWS Glue Crawler używany do automatycznego aktualizowania metadanych w katalogu danych.
         \item AWS Glue Data Catalog --- katalog danych używany do przechowywania metadanych o danych w Amazon S3.
     \end{itemize}
-    \item \textbf{Zarządzanie przepływem danycb}: AWS Glue używany do eksploracji i przetwarzania danych za pomocą Notebooków AWS Glue i PySparka (Python API do Apache Spark).
+    \item \textbf{Zarządzanie przepływem danych}: AWS Glue używany do eksploracji i przetwarzania danych za pomocą Notebooków AWS Glue i PySparka (Python API do Apache Spark).
     \item \textbf{Analityka i wizualizacja danych}:  Amazon EMR Notebook używany do analizy danych i tworzenia wykresów. Notebook używał PySparka i był uruchamiany na wcześniej przygotowanym klastrze Amazon EMR.
     % \item AWS QuickSight używany do wizualizacji danych i tworzenia dashboardów.
     \item \textbf{Logi}: Amazon CloudWatch używany do sprawdzania logów z Crawlera i procesów ETL w AWS Glue i klastrów Amazon EMR.
 
 \end{enumerate}
 
-% Moze:
-% 1. Jakis Pipeline zeby ladowal automatycznie dane z repo Jeffa do S3 bucketow
-%  - moze sprawdzac regularnie czy jest nowy commit i wtedy aktualizowac wszystkie dane
-% 2. Zrob jakies konrketne trasnformacje na tych danych (oczyszczanie, itd.)
-% 3. Wizualizacje i analityka
 
 \section{Zbieranie danych}
 \subsection{Pozyskanie surowych danych} \label{sec:obtain_raw_data}
-Surowe tenisowe dane pozyskane są z dwóch repozytoriów na GitHubie Jeffa Sackmanna.
+Surowe tenisowe dane pozyskane są z dwóch repozytoriów Jeffa Sackmanna na GitHubie.
 \begin{itemize}
     \item Dla profesjonalnego tenisa męskiego (ATP) \cite{tennis_atp}.
     \item Dla profesjonalnego tenisa żeńskiego (WTA) \cite{tennis_wta}.
@@ -171,7 +166,7 @@ Dane zostały pozyskane przez autora najprawdopodobniej (bazując na opisie repo
     \item Lista graczy tenisa ziemnego, którzy grali w profesjonalnym turnieju ATP lub WTA wraz z podstawowymi informacjami na ich temat.
     \item Informacje o profesjonalnym rankingu ATP i WTA (aktualizowane co tydzień) od lat 70 do 2023. Statystyki dla każdej dekady i roku 2023 są zawarte w osobnym pliku CSV.
 \end{itemize}
-W sumie są to 262 pliki CSV o całkowitym rozmiarze 395,7 MiB. W sumie są to informacje o 1 581 121 meczach, 2 621 tygodniach rankingów, 64 675 zawodnikach i 65 607 zawodniczkach. Repozytoria Jeffa Sackmanna na GitHubie zawierają również statystyki z meczów deblowych i amatorskich, ale te zostały pominięte w tym projekcie. Bardziej szczegółowy opis surowych danych znajduje się w załączniku \ref{sec:raw_data_description}.
+W sumie są to 262 pliki CSV o całkowitym rozmiarze 395,7 MiB. Są to informacje o 1 581 121 meczach, 2 621 tygodniach rankingów, 64 675 zawodnikach i 65 607 zawodniczkach. Repozytoria Jeffa Sackmanna na GitHubie zawierają również statystyki z meczów deblowych i amatorskich, ale te zostały pominięte w tym projekcie. Bardziej szczegółowy opis surowych danych znajduje się w załączniku \ref{sec:raw_data_description}.
 
 Te dane zostały wybrane z poniższych powodów:
 \begin{itemize}
@@ -190,19 +185,19 @@ Inne źródła tenisowych danych również były rozważane. Między innymi był
 
 
 \subsection{Przesyłanie danych do chmury AWS}
-Surowe pliki CSV opisane powyżej zostały przesłane do chmury AWS w krokach opisanych poniżej:
+Surowe pliki CSV zostały przesłane do chmury AWS w krokach opisanych poniżej:
 \begin{enumerate}
     \item Trzy pliki CSV posiadające problem z kodowaniem UTF-8 (opisane bardziej szczegółowo w sekcji \ref{sec:explore}) zostały ręcznie oczyszczone.
-    \item Do przechowywania plików CSV stworzony został bucket S3 o nazwie ,,tennis-stats-data'' z użyciem AWS CLI --- skrypt:
+    \item Do przechowywania plików CSV została stworzona odpowiednia lokalizacja w S3 o nazwie ,,tennis-stats-data''. Do tego użyte zostało AWS CLI --- skrypt:
 \begin{verbatim}
 aws_cli/create_s3_raw_data.sh
 \end{verbatim}
-    \item Pliki CSV zostały przesłane do bucketu S3 z użyciem AWS CLI --- skrypty:
+    \item Pliki CSV zostały przesłane do odpowiedniej lokalizacji w S3 z użyciem AWS CLI --- skrypty:
 \begin{verbatim}
 aws_cli/upload_atp_files_to_s3.sh
 aws_cli/upload_wta_files_to_s3.sh
 \end{verbatim}
-    \item Pliki zorganizowane w 6 folderach w buckecie S3 (decyzja o takim podziale była podjęta po wstępnej eksploracji danych): atp\_matches, atp\_players, atp\_rankings, wta\_matches, wta\_players, wta\_rankings. Skrypt:
+    \item Pliki zostały zorganizowane w 6 folderach w odpowiedniej lokalizacji w S3 (decyzja o takim podziale była podjęta po wstępnej eksploracji danych): atp\_matches, atp\_players, atp\_rankings, wta\_matches, wta\_players, wta\_rankings. Skrypt:
 \begin{verbatim}
 aws_cli/reorganise_s3.sh
 \end{verbatim}
@@ -240,7 +235,7 @@ Po przesłaniu danych do chmury AWS Glue Crawler został skonfigurowany i urucho
 aws_cli/crawler_setup_raw.sh
 aws_cli/crawler_run_raw.sh
 \end{verbatim}
-Crawler automatycznie stworzył metadane (następnie zapisane w AWS Glue Data Catalog), które umożliwiają AWS Glue i innym usługom przeglądanie informacji w S3 w postaci bazy danych z tabelami. Zapewnia to uporządkowany i zorganizowany widok zasobów danych i spójne i dostępne metadane dla różnych narzędzi. Na podstawie bucketu S3 ,,processed-tennis-stats-data'' Crawler wykrył 6 typów schematów i stworzył 6 tabeli w AWS Glue Data Catalog. Zawierają one informacje wyczytane z plików CSV takie jak tytuły kolumn i typ danych w kolumnach.
+Crawler automatycznie stworzył metadane (następnie zapisane w AWS Glue Data Catalog), które umożliwiają AWS Glue i innym usługom przeglądanie informacji w S3 w postaci bazy danych z tabelami. Zapewnia to uporządkowany i zorganizowany widok zasobów danych i spójne i dostępne metadane dla różnych narzędzi. Na podstawie lokalizacji ,,tennis-stats-data'' w S3, Crawler wykrył 6 typów schematów i stworzył 6 tabeli w AWS Glue Data Catalog. Zawierają one informacje wyczytane z plików CSV takie jak tytuły kolumn i typ danych w kolumnach.
 
 Następnie AWS Glue Studio Notebook i PySpark zostały użyte do kolejnej eksploracji danych (tym razem na całej bazie danych) oraz do zdefiniowania wstępnych transformacji. Notebook dostępny jest w pliku:
 \begin{verbatim}
@@ -256,7 +251,7 @@ Na podstawie eksploracji danych lokalnie i w chmurze oraz wstępnych transformac
     \item Połączenie danych ATP i WTA --- stworzenie 3 tabel (matches, rankings, players) z 6 tabel (atp\_matches, atp\_rankings, atp\_players, wta\_matches, wta\_rankings, wta\_players). Dodanie kolumny \lstinline[style=verbatimStyle]{tour} opisującej czy dane pochodzą z cyklu rozgrywek ATP czy WTA.
     \item Zmiana typu danych kolumn opisujących daty z ,,bigint'' na ,,date''.
     \item Interpretacja kolumny \lstinline[style=verbatimStyle]{score} opisującej wynik meczu tenisowego w gemach (np. 7-6 4-6 6-2), aby uzyskać informacje o gemach wygranych przez zwycięzcę i przegranego (odpowiednio 17 i 14 w tym przykładzie) i zapis tych informacji w nowych kolumnach.
-    \item Zapis przetworzonych danych w nowym buckecie S3 ,,processed-tennis-stats-data'' w formacie Parquet zapewniającym wydajne przechowywanie i wyszukiwanie danych oraz wydajną kompresję danych. Skrypt do stworzenia nowego bucketu S3:
+    \item Zapis przetworzonych danych w nowej lokalizacji ,,processed-tennis-stats-data'' w S3 w formacie Parquet zapewniającym wydajne przechowywanie i wyszukiwanie danych oraz wydajną kompresję danych. Skrypt do stworzenia nowej lokalizacji w S3:
 \begin{verbatim}
 aws_cli/create_s3_processed_data.sh
 \end{verbatim}
@@ -277,7 +272,7 @@ aws_cli/crawler_run_processed.sh
 Posiadając przetworzone dane w S3 oraz ich metadane w AWS Glue Data Catalog, następnym krokiem było przeprowadzenie analizy danych w celu wyciągnięcia wniosków, które przyczynią się do poprawy przygotowania i wyników zawodnika. 
 
 \subsection{Narzędzia i konfiguracja}
-Aby skutecznie przeprowadzić analizę danych big data, odpowiednie narzędzia musiały być skonfigurowane. Tym narzędziem było Amazon EMR skonfigurowane w nowej konsoli AWS w następujący sposób (z pomocą instrukcji zawartych w \cite{aws_emr_setup}):
+Aby skutecznie przeprowadzić analizę danych big data, odpowiednie narzędzia musiały zostać skonfigurowane. Tym narzędziem było Amazon EMR skonfigurowane w nowej konsoli AWS w następujący sposób (z pomocą instrukcji zawartych w \cite{aws_emr_setup}):
 \begin{enumerate}
     \item Stworzenie nowego klastra EMR z użyciem AWS CLI --- skrypt:
 \begin{verbatim}
@@ -286,7 +281,7 @@ aws_cli/create_emr_cluster.sh
     Domyślne ustawienia klastra z pakietem aplikacji ,,Spark Interactive'' były odpowiednie. Nowe klastery musiały być tworzone po wygaśnięciu starych (np. po dłuższej bezczynności klastra). 
     \item Stworzenie EMR Studio --- konieczne do stworzenia EMR Notebook w nowej konsoli AWS. Wykonane z użyciem GUI.
     \item Stworzenie EMR Workspace (czyli nowego EMR Notebook) --- interaktywne środowisko do analizy danych z użyciem PySparka. Do stworzonego EMR Workspace podłączany był istniejący i aktywny klaster EMR z ustawieniem ,,Launch in Jupyter'' i domyślnymi grupami bezpieczeństwa. Wszystko wykonane z użyciem GUI.
-    \item Instalacja dodatkowych bibliotek Pythona (numpy, pandas, matplotlib) na klastrze EMR poprzez EMR Notebook według instrukcji w \cite{emr_python_libs}.
+    \item Instalacja dodatkowych bibliotek Pythona (numpy, pandas, matplotlib) na klastrze EMR poprzez EMR Notebook według dostępnych instrukcji \cite{emr_python_libs}.
 \end{enumerate}
 
 Sama analiza danych wykonana została w EMR Notebook z użyciem PySparka oraz bibliotek Pythona: numpy, pandas i matplotlib. Notebook dostępny jest w pliku:
@@ -330,7 +325,7 @@ Różnice w wynikach na różnych nawierzchniach zobrazowane są w tabeli \ref{t
     \caption{Wyniki Daniiła Miedwiediewa na różnych nawierzchniach.}
     \label{tab:surfaces}
 \end{table}
-Na podstawie tych danych zespół Daniiła mógłby zwiększyć częstotliwość treningów na jego najgorzej nawierzchni --- mączce. Ewentualnie zespół mógłby zaplanować starty głównie na kortach twardych, aby zwiększyć szanse na wygrane i większe zarobki. Podobne analizy mogą być szczególnie przydatne dla graczy z niższych rankingów, którzy nie grają w głównych (często obowiązkowych) turniejach i przez to mają większą elastyczność w planowaniu turniejowych startów na różnych nawierzchniach oraz mają więcej czasu na treningi.
+Na podstawie tych danych zespół Daniiła mógłby zwiększyć częstotliwość treningów na jego najgorszej nawierzchni --- mączce. Ewentualnie zespół mógłby zaplanować starty głównie na kortach twardych, aby zwiększyć szanse na wygrane i większe zarobki. Podobne analizy mogą być szczególnie przydatne dla graczy z niższych rankingów, którzy nie grają w głównych (często obowiązkowych) turniejach i przez to mają większą elastyczność w planowaniu turniejowych startów na różnych nawierzchniach oraz mają więcej czasu na treningi.
 
 
 \subsection{Analiza jakości serwisu na różnych poziomach rankingu}
@@ -358,14 +353,14 @@ Wyraźnie widać, że rankingową wspinaczkę z poziomu 100-300 (turnieje Challe
 
 
 \subsection{Analiza wyników zawodników w zależności od poziomu zmęczenia}
-Kondycja fizyczna jest ważnym atrybutem profesjonalnego tenisisty. W typowym turnieju tenisowym (drabinka na 32 graczy), aby wygrać turniej, gracz musi odnieść zwycięstwo w 5 meczach w ciągu paru dni. Wyznacznikiem ilości wysiłku włożonego w mecz (tj. zmęczenia) może być całkowita liczba rozegranych gemów w meczu. W meczu tenisowym do 2 wygranych setów (również nazywane \textit{best of 3}) minimalna liczba rozegranych gemów to 12 (wynik 6-0 6-0), a maksymalna to 39 (wynik 7-6 6-7 7-6). Wykres \ref{fig:win_games_played} przedstawia procent wygranych meczów w drugiej rundzie (R16) typowego turnieju w zależności od liczby rozegranych gemów w rundzie pierwszej (R32).
+Kondycja fizyczna jest ważnym atrybutem profesjonalnego tenisisty. W typowym turnieju tenisowym (drabinka na 32 graczy), aby wygrać turniej, gracz musi odnieść zwycięstwo w 5 meczach w ciągu paru dni. Wyznacznikiem ilości wysiłku włożonego w mecz (tj. zmęczenia) może być całkowita liczba rozegranych gemów w meczu. W meczu tenisowym do 2 wygranych setów (również nazywanym \textit{best of 3}) minimalna liczba rozegranych gemów to 12 (wynik 6-0 6-0), a maksymalna to 39 (wynik 7-6 6-7 7-6). Wykres \ref{fig:win_games_played} przedstawia procent wygranych meczów w drugiej rundzie (R16) typowego turnieju w zależności od liczby rozegranych gemów w rundzie pierwszej (R32).
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{figures/win_games_played.png}
     \caption{Procent wygranych meczów w drugiej rundzie (R16) w zależności od rozegranych gemów w rundzie pierwszej (R32).}
     \label{fig:win_games_played}
 \end{figure}
 
-Jak widać powyżej, zmęczenie znacząco wpływa na wyniki zawodników. Zawodnik, który rozegrał w rundzie pierwszej tylko 12 gemów (wynik 6-0 6-0) ma średnio 57,7\% szans na wygranie drugiej rundy. Natomiast zawodnik, który rozegrał długi 38-gemowy pojedynek pierwszej rundy (np. wynik 7-6 5-7 7-6) ma średnio tylko 39,1\% szans na wygraną w kolejnej rundzie. Równocześnie warto zauważyć, że liczba rozegranych gemów nie jest idealnym miernikiem zmęczenia. Mecze bardzo wysokich graczy posiadających świetny serwis często kończą się wysokim wynikiem (np. 7-6 6-7 7-6) ale niekoniecznie są wyczerpujące fizycznie przez brak długich wymian (piłki są często wygrywane bezpośrednio po serwisie). To może być powodem wahań w procencie wygranych meczów w R16 dla liczby rozegranych gemów w R32 powyżej 30 (widocznych na wykresie \ref{fig:win_games_played}).
+Jak widać na wykresie \ref{fig:win_games_played}, zmęczenie znacząco wpływa na wyniki zawodników. Zawodnik, który rozegrał w rundzie pierwszej tylko 12 gemów (wynik 6-0 6-0) ma średnio 57,7\% szans na wygranie drugiej rundy. Natomiast zawodnik, który rozegrał długi 38-gemowy pojedynek pierwszej rundy (np. wynik 7-6 5-7 7-6) ma średnio tylko 39,1\% szans na wygraną w kolejnej rundzie. Równocześnie warto zauważyć, że liczba rozegranych gemów nie jest idealnym miernikiem zmęczenia. Mecze bardzo wysokich graczy posiadających świetny serwis często kończą się wysokim wynikiem (np. 7-6 6-7 7-6) ale niekoniecznie są wyczerpujące fizycznie przez brak długich wymian (piłki są często wygrywane bezpośrednio po serwisie). To może być powodem wahań w procencie wygranych meczów w R16 dla liczby rozegranych gemów w R32 powyżej 30 (widocznych na wykresie \ref{fig:win_games_played}).
 
 Na wykresie \ref{fig:gbr_vs_esp} przedstawiono te same dane, ale z dodatkowym podziałem na pochodzenie zawodników --- przedstawieni są Brytyjczycy (GBR) i Hiszpanie (ESP).
 \begin{figure}[h]
@@ -373,7 +368,7 @@ Na wykresie \ref{fig:gbr_vs_esp} przedstawiono te same dane, ale z dodatkowym po
     \caption{Porównanie kondycji zawodników brytyjskich (GBR) i hiszpańskich (ESP) na tle średniej.}
     \label{fig:gbr_vs_esp}
 \end{figure}
-Dla meczów pierwszej rundy, które mogą być uznane za długie i męczące (między 20 a 35 gemów) wyraźnie widać różnicę w procencie wygranych meczów drugiej rundy między Brytyjczykami i Hiszpanami. Co więcej, Brytyjski tenisista wypada również gorzej od średniego gracza. Za przygotowanie fizyczne profesjonalnych tenisistów z Wielkiej Brytanii często odpowiada brytyjski związek tenisowy (LTA). Powyższe dane powinny stanowić podstawę do zmiany brytyjskich treningów kondycyjnych, które mogłyby zostać oparte na modelu hiszpańskim.
+Dla meczów pierwszej rundy, które mogą być uznane za długie i męczące (między 20 a 35 gemów) wyraźnie widać różnicę w procencie wygranych meczów drugiej rundy między Brytyjczykami i Hiszpanami. Co więcej, brytyjscy tenisiści nie tylko wypadają gorzej od graczy hiszpańskich, ale również wypadają gorzej niż przeciętny tenisowy zawodnik. Za przygotowanie fizyczne profesjonalnych tenisistów z Wielkiej Brytanii często odpowiada brytyjski związek tenisowy (\textit{Lawn Tennis Association}). Powyższe dane powinny stanowić podstawę do zmiany brytyjskich treningów kondycyjnych, które mogłyby zostać oparte na modelu hiszpańskim.
 
 
 \subsection{Analiza skuteczności pierwszego serwisu w zależności od wzrostu zawodnika}
@@ -414,8 +409,8 @@ Potencjalne ulepszenia tej pracy i dalsza praca do wykonania:
     Powyższe dane również mogłyby być przerabiane i analizowane za pomocą narzędzi big data.
     \item Użycie AWS Transfer Family to przesyłania plików CSV do S3. Zapewniłoby to solidniejsze i bardziej wszechstronne rozwiązanie w porównaniu z przesyłaniem bezpośrednim (np. zapewniłoby możliwość monitorowania przesyłu). Przysłanie wszystkich plików CSV do S3 zajmowało ponad 20 minut i mogło być podatne na błędy, których AWS Transfer Family pomaga uniknąć. Niestety AWS Transfer Family nie było dostępne w AWS Academy Learner Lab.
     \item Użycie AWS Lambda, aby reagować na nowe commity w repozytorium Jeffa Sackamanna (nowe dane) i automatycznie rozpoczynać cały proces ETL i analizy. AWS Lambda nie było użyte ze względu na ograniczenia czasowe.
-    \item Stworzenie dashboardu z dostępem do przetworzonych danych i udostępnienie go trenerom i zawodnikom jako końcowy produkt oparty na danych i komunikacja wyników. Dashboard mógłby być stworzony z użyciem AWS QuickSight (oryginalny plan zakładał użycie tego narzędzia, ale nie było ono dostępne w AWS Academy Learner Lab) lub innego narzędzia do wizualizacji danych i udostępniony w aplikacji webowej. Dashboard pozwalałby na filtrowanie danych, np. wybór zawodnika i przegląd jego statystyk.
-    \item Większy zakres oczyszczania danych w procesie ETL. Podczas analizy w EMR Notebook, że więcej danych wymagało oczyszczenia, np. niektóre dane WTA dotyczące pierwszego serwisu były nieprawidłowe (więcej wygranych punktów serwisowych niż zagranych). Podobnie było z danymi dotyczącymi wzrostu zawodniczek WTA.
+    \item Stworzenie dashboardu z dostępem do przetworzonych danych i udostępnienie go trenerom i zawodnikom (końcowy produkt oparty na danych i komunikacja wyników). Dashboard mógłby być stworzony z użyciem AWS QuickSight (oryginalny plan zakładał użycie tego narzędzia, ale nie było ono dostępne w AWS Academy Learner Lab) lub innego narzędzia do wizualizacji danych i udostępniony w aplikacji webowej. Dashboard pozwalałby na filtrowanie danych, np. wybór zawodnika i przegląd jego statystyk.
+    \item Większy zakres oczyszczania danych w procesie ETL. Podczas analizy w EMR Notebook okazało się, że więcej danych wymagało oczyszczenia, np. niektóre dane WTA dotyczące pierwszego serwisu były nieprawidłowe (więcej wygranych punktów serwisowych niż wszystkich zagranych punktów). Podobnie było z danymi dotyczącymi wzrostu zawodniczek WTA.
     \item Większy zakres zastosowania AWS Glue Data Catalog. Poza przeglądaniem informacji o bazie danych zorganizowanych w tabelkach, zastosowanie AWS Glue Data Catalog w tym projekcie było ograniczone. Zalety AWS Glue Data Catalog takie jak przechowywanie scentralizowanych i zorganizowanych metadanych, zapewnienie spójnego interfejsu między narzędziami, czy optymalizacja zapytań mogłyby zostać wykorzystane lepiej przy większej ilości użytych narzędzi AWS.
     \item Uprzątniecie kodu w EMR Notebook. Niektóre fragmenty kodu powtarzały się, ale miały różne parametry. Mogłyby zostać zastąpione funkcjami.
     \item Poza tenisem męskim (ATP), dodatkowe przeanalizowanie podobnych zależności w profesjonalnym tenisie żeńskim (WTA). Jakość dostępnych danych WTA była nieco gorsza niż danych ATP.
